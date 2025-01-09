@@ -1,0 +1,11 @@
+.filter_side {
+    height: auto;
+    width: 300px;
+    border-right: 1px solid black;
+    position: relative;
+}
+
+.desc_block_filter {
+    font-weight: 600;
+    font-size: 17px;
+}
