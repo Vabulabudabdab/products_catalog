@@ -22,12 +22,19 @@
 <div class="wrapper">
     <!-- Navbar -->
     <nav class=" navbar navbar-expand navbar-dark">
-        <ul class="navbar-nav m-auto">
-            <a href="" class="btn btn-primary" style="margin-right: 35px">Главная</a>
+        <ul class="navbar-nav float-left ml-5">
+            <a href="" class="btn btn-primary">Главная страница</a>
         </ul>
         <ul class="navbar-nav ml-auto">
-            <a href="" class="btn btn-primary" style="margin-right: 35px">Зарегистрироваться</a>
-            <a href="" class="btn btn-primary" style="margin-right: 35px">Войти</a>
+            @if(auth()->user())
+                @if(auth()->user()->role_id == 1)
+                <a href="{{route('admin.index')}}" class="btn btn-primary" style="margin-right: 35px">Админ панель</a>
+                @endif
+                <a href="{{route('logout')}}" class="btn btn-primary" style="margin-right: 35px">Выйти</a>
+            @else
+                <a href="{{route('register')}}" class="btn btn-primary" style="margin-right: 35px">Зарегистрироваться</a>
+                <a href="{{route('login')}}" class="btn btn-primary" style="margin-right: 35px">Войти</a>
+            @endif
             {{--            <a href="" class="btn btn-danger" style="margin-right: 35px">Выйти</a>--}}
 
         </ul>

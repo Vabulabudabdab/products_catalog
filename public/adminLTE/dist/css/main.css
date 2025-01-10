@@ -9,3 +9,9 @@
     font-weight: 600;
     font-size: 17px;
 }
+
+.product_color_box {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+}
