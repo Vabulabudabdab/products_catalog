@@ -7,6 +7,7 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">Создание продукта</h1>
+                    <h5 class="text-danger">Все поля необходимо заполнить!</h5>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">

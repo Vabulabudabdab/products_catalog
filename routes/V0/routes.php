@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\V0\IndexController::class, 'index'])->name('index');
 
+Route::post('/search', [App\Http\Controllers\V0\IndexController::class, 'search'])->name('index.search');
+
 Route::group(['prefix' => 'auth'], function () {
 
     Route::get('/register', [\App\Http\Controllers\V0\IndexController::class, 'register'])->name('register');

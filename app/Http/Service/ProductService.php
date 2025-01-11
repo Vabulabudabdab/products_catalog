@@ -9,6 +9,8 @@ use App\Models\ProductColor;
 use App\Models\ProductTag;
 use App\Models\Shop;
 use App\Models\Tag;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -50,9 +52,9 @@ class ProductService
         try {
 
             DB::beginTransaction();
-                $category->update([
-                   'title' => $title
-                ]);
+            $category->update([
+                'title' => $title
+            ]);
             DB::commit();
 
         } catch (\Exception $exception) {
@@ -76,7 +78,8 @@ class ProductService
      * @param $data
      * @return void
      */
-    public function storeTag($data) {
+    public function storeTag($data)
+    {
         $title = $data['title'];
 
         try {
@@ -100,7 +103,8 @@ class ProductService
      * @param Tag $tag
      * @return void
      */
-    public function updateTag($data, Tag $tag) {
+    public function updateTag($data, Tag $tag)
+    {
 
         $title = $data['title'];
 
@@ -108,7 +112,7 @@ class ProductService
             DB::beginTransaction();
 
             $tag->update([
-               'title' => $title
+                'title' => $title
             ]);
 
             DB::commit();
@@ -123,7 +127,8 @@ class ProductService
      * @param Tag $tag
      * @return void
      */
-    public function deleteTag(Tag $tag) {
+    public function deleteTag(Tag $tag)
+    {
         $tag->delete();
     }
 
@@ -131,7 +136,8 @@ class ProductService
      * @param $data
      * @return void
      */
-    public function storeShop($data) {
+    public function storeShop($data)
+    {
 
         $title = $data['title'];
         $address = $data['address'];
@@ -139,8 +145,8 @@ class ProductService
         try {
             DB::beginTransaction();
             $shop = Shop::create([
-               'title' => $title,
-               'address' => $address
+                'title' => $title,
+                'address' => $address
             ]);
             DB::commit();
         } catch (\Exception $exception) {
@@ -155,7 +161,8 @@ class ProductService
      * @param $data
      * @return void
      */
-    public function updateShop(Shop $shop, $data) {
+    public function updateShop(Shop $shop, $data)
+    {
 
         $title = $data['title'];
         $address = $data['address'];
@@ -181,7 +188,8 @@ class ProductService
      * @param Shop $shop
      * @return void
      */
-    public function deleteShop(Shop $shop) {
+    public function deleteShop(Shop $shop)
+    {
         $shop->delete();
     }
 
@@ -189,7 +197,8 @@ class ProductService
      * @param $data
      * @return void
      */
-    public function storeColor($data) {
+    public function storeColor($data)
+    {
 
         $title = $data['title'];
         $color_id = $data['color_id'];
@@ -198,8 +207,8 @@ class ProductService
             DB::beginTransaction();
 
             $color = Color::create([
-               'title' => $title,
-               'color_id' => $color_id
+                'title' => $title,
+                'color_id' => $color_id
             ]);
 
             DB::commit();
@@ -217,7 +226,8 @@ class ProductService
      * @param $data
      * @return void
      */
-    public function updateColor(Color $color, $data) {
+    public function updateColor(Color $color, $data)
+    {
 
         $title = $data['title'];
         $color_id = $data['color_id'];
@@ -243,7 +253,8 @@ class ProductService
      * @param Color $color
      * @return void
      */
-    public function deleteColor(Color $color) {
+    public function deleteColor(Color $color)
+    {
         $color->delete();
     }
 
@@ -251,7 +262,8 @@ class ProductService
      * @param $image
      * @return bool
      */
-    public function getImagePath($image) {
+    public function getImagePath($image)
+    {
         $image_path = Storage::disk('public')->put('images', $image);
         return $image_path;
     }
@@ -260,7 +272,8 @@ class ProductService
      * @param $data
      * @return void
      */
-    public function storeProduct($data) {
+    public function storeProduct($data)
+    {
 
         $title = $data['title'];
         $image = $this->getImagePath($data['image']);
@@ -276,14 +289,14 @@ class ProductService
             DB::beginTransaction();
 
             $product = Product::create([
-               'title' => $title,
-               'image' => $image,
-               'category_id' => $category_id,
-               'price' => $price,
-               'old_price' => 0,
-               'shop_id' => $shop_id,
-               'avaible' => $avaible,
-               'desc' => $desc
+                'title' => $title,
+                'image' => $image,
+                'category_id' => $category_id,
+                'price' => $price,
+                'old_price' => 0,
+                'shop_id' => $shop_id,
+                'avaible' => $avaible,
+                'desc' => $desc
             ]);
 
             $product->tags()->attach($tags);
@@ -304,7 +317,8 @@ class ProductService
      * @param $data
      * @return void
      */
-    public function updateProduct(Product $product, $data) {
+    public function updateProduct(Product $product, $data)
+    {
 
         $title = $data['title'];
         $image = $this->getImagePath($data['image']);
@@ -344,12 +358,51 @@ class ProductService
 
     }
 
-    public function deleteProduct(Product $product) {
+    /**
+     * @param Product $product
+     * @return void
+     */
+    public function deleteProduct(Product $product)
+    {
 
         ProductTag::where('product_id', $product->id)->delete();
         ProductColor::where('product_id', $product->id)->delete();
 
         $product->delete();
+    }
+
+    public function searchIndexProduct($data)
+    {
+
+        $product_name = $data['product_name'];
+        $category = $data['category'];
+        $tag_ids = $data['tag_ids'];
+        $min_price = $data['min'];
+        $max_price = $data['max'];
+        $shop_id = $data['shop_id'];
+        $product_id = Product::where('title', 'LIKE', "%{$product_name}%")->get();
+
+        $this->setCookieForSearchProduct($category, $min_price, $max_price, $shop_id);
+
+        $result = Product::where([
+            ['title', 'LIKE', "%{$product_name}%"],
+            'category_id' => $category,
+            'shop_id' => $shop_id,
+            ['price', '<=', $max_price],
+            ['price', '>=', $min_price]
+        ])->get();
+
+
+        return $result;
+
+    }
+
+    public function setCookieForSearchProduct($category, $min_price, $max_price, $shop_id)
+    {
+        Cookie::make('category', $category, 360);
+        Cookie::make('min_price', $min_price, 360);
+        Cookie::make('max_price', $max_price, 360);
+        Cookie::make('shop_id', $shop_id, 360);
     }
 
 }

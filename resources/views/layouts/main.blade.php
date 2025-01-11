@@ -23,7 +23,7 @@
     <!-- Navbar -->
     <nav class=" navbar navbar-expand navbar-dark">
         <ul class="navbar-nav float-left ml-5">
-            <a href="" class="btn btn-primary">Главная страница</a>
+            <a href="{{route('index')}}" class="btn btn-primary">Главная страница</a>
         </ul>
         <ul class="navbar-nav ml-auto">
             @if(auth()->user())
@@ -48,9 +48,11 @@
 
     <section style="display: flex">
         <div class="filter_side" style="height:auto">
-            <form>
+            <form action="{{route('index.search')}}" method="post">
+                @csrf
             <div class="desc_block_filter mt-1 ml-4">
                 <h4>Фильтр поиска</h4>
+               <div class="text-danger">{{session('error_price')}}</div>
             </div>
 
             <div class="desc_block_filter mt-1 ml-4">
@@ -59,7 +61,7 @@
 
             <div class="filter_block ml-1 w-75">
                 <div class="form-check">
-                   <input type="text" class="form-control">
+                   <input type="text" class="form-control" name="product_name" value="{{!empty(cookie('product_name')) ? old('product_name') : ''}}">
                 </div>
             </div>
 
@@ -68,13 +70,13 @@
             </div>
 
             <div class="filter_block ml-4">
-                <div class="form-check">
-                    <input class="form-check-input" style="margin-top: 6px" type="radio" name="flexRadioDefault"
-                           id="flexRadioDefault1" onclick="clickRadio(this)">
-                    <label class="form-check-label">
-                        Деревья
-                    </label>
-                </div>
+                    <select class="form-select ml-0 w-75" aria-label="Default select example" name="category">
+                        <option selected>Выберите категорию</option>
+                        @foreach($categories as $category)
+                            <option value="{{$category->id}}">{{$category->title}}</option>
+                        @endforeach
+
+                    </select>
             </div>
 
             <div class="desc_block_filter mt-1 ml-4">
@@ -84,9 +86,9 @@
             <div class="filter_block ml-1 w-75">
                 <div class="form-check">
                     <select class="select2" name="tag_ids[]" multiple="multiple" data-placeholder="Выберите тэги" style="width: 100%;">
-                        <option value="1">test</option>
-                        <option value="1">test</option>
-                        <option value="1">test</option>
+                        @foreach($tags as $tag)
+                        <option {{!empty(old('tag_ids[]')) ? 'selected' : ''}} value="{{$tag->id}}">{{$tag->title}}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -96,9 +98,9 @@
             </div>
 
             <div class="filter_block ml-2" style="display: flex">
-                <input type="number" min="0" class="form-control ml-3 w-25" placeholder="От">
+                <input type="number" min="0" class="form-control ml-3 w-50" placeholder="От" name="min" value="{{!empty(cookie('min_price')) ? cookie('min_price') : ''}}">
                 <i class="fa fa-arrow-right mt-2 ml-2"></i>
-                <input type="number" min="1"  class="form-control ml-1 w-25" placeholder="До">
+                <input type="number" min="1"  class="form-control ml-1 w-50" placeholder="До" name="max" value="{{!empty(cookie('max_price')) ? cookie('max_price') : ''}}">
             </div>
 
             <div class="desc_block_filter mt-1 ml-4">
@@ -106,9 +108,12 @@
             </div>
 
             <div class="filter_block ml-2">
-                    <select class="form-select ml-3 w-75" aria-label="Default select example">
+                    <select class="form-select ml-3 w-75" aria-label="Default select example" name="shop_id">
                         <option selected>Выберите магазин</option>
-                        <option value="1">Магазин 1</option>
+                        @foreach($shops as $shop)
+                            <option {{!empty(old('shop_id')) ? 'selected' : ''}} value="{{$shop->id}}">{{$shop->title}}</option>
+                        @endforeach
+
                     </select>
             </div>
 
@@ -134,8 +139,8 @@
 </div>
 <!-- ./wrapper -->
 
-<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top w-75"
-        style="margin: auto">
+<footer class="d-flex flex-wrap justify-content-between align-items-center pt-3 my-4  border-top w-75"
+        style="margin: auto; position: relative !important; bottom: 0 !important; margin-top: 200px !important;">
     <p class="col-md-4 mb-0 text-muted">© 2025 Каталог товаров</p>
 
     <a href="/"
@@ -161,9 +166,7 @@
 <!-- Bootstrap 4 -->
 <script src="{{asset('adminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 <!-- overlayScrollbars -->
-<script src="{{asset('adminLTE/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
 <!-- AdminLTE App -->
-<script src="{{asset('adminLTE/dist/js/adminlte.js')}}"></script>
 
 
 <script src="{{asset('adminLTE/plugins/select2/js/select2.full.min.js')}}"></script>

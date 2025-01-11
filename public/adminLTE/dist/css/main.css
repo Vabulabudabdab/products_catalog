@@ -1,7 +1,8 @@
 .filter_side {
     height: auto;
     width: 300px;
-    border-right: 1px solid black;
+    background-color: whitesmoke;
+    margin: 20px;
     position: relative;
 }
 

@@ -21,10 +21,6 @@
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
 
-    <!-- Preloader -->
-    <div class="preloader flex-column justify-content-center align-items-center">
-        <p class="animation__shake">Сотрудники</p>
-    </div>
 
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-dark navbar-light">
@@ -37,7 +33,10 @@
 
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
-
+            <!-- Messages Dropdown Menu -->
+            <a href="{{route('index')}}" class="btn btn-primary" style="margin-right: 5px">Главная страница</a>
+        </ul>
+        <ul class="navbar-nav ml-auto">
             <!-- Messages Dropdown Menu -->
             <a href="{{route('logout')}}" class="btn btn-primary" style="margin-right: 5px">Выйти</a>
         </ul>

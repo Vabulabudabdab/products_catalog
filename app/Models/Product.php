@@ -8,7 +8,7 @@ class Product extends Model
 {
     protected $table = 'products';
 
-    protected $fillable = ['title', 'price', 'desc', 'image', 'category_id', 'avaible', 'old_price'];
+    protected $fillable = ['title', 'price', 'desc', 'image', 'category_id', 'avaible', 'old_price', 'shop_id'];
 
     public function tags() {
         return $this->belongsToMany(Tag::class, 'products_tags', 'product_id', 'tag_id');
