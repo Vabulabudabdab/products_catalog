@@ -7,6 +7,9 @@
             @if(!empty($tag_ids) && !empty($result) || $result->count() >= 1)
 
                 @foreach($result as $product)
+                    @foreach($product->tags as $tag)
+                        @foreach($tag_products as $tag_product)
+                            @if($tag->id == $tag_product->id)
                                 <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
                                     <div class="card">
                                         <img src="{{asset('storage/' . $product->image)}}"
@@ -39,7 +42,11 @@
                                         </div>
                                     </div>
                                 </div>
+                                @else
+                            @endif
 
+                                @endforeach
+                    @endforeach
                 @endforeach
 
             @else

@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use Filterable;
     protected $table = 'products';
 
     protected $fillable = ['title', 'price', 'desc', 'image', 'category_id', 'avaible', 'old_price', 'shop_id'];

@@ -375,9 +375,21 @@ class ProductService
     public function searchIndexProduct($data)
     {
 
-        $filter = app()->make(ProductFilter::class, ['queryParams' => array_filter($data)]);
+        $product_name = $data['product_name'];
+        $category = $data['category'];
+        $min_price = $data['min'];
+        $max_price = $data['max'];
+        $shop_id = $data['shop_id'];
 
-        $result = Product::filter($filter)->get();
+        $this->setCookieForSearchProduct($category, $min_price, $max_price, $shop_id);
+
+        $result = Product::where([
+            ['title', 'LIKE', "%{$product_name}%"],
+            'category_id' => $category,
+            'shop_id' => $shop_id,
+            ['price', '<=', $max_price],
+            ['price', '>=', $min_price]
+        ])->get();
 
         return $result;
 

@@ -12,7 +12,8 @@ class ProductFilter extends AbstractFilter {
     const COLORS = 'colors';
     const PRICES = 'prices';
     const TAGS = 'tags';
-
+    const SHOPS = 'shops';
+    const TITLES = 'titles';
     protected function getCallbacks(): array
     {
         return [
@@ -20,6 +21,8 @@ class ProductFilter extends AbstractFilter {
             self::COLORS => [$this, 'colors'],
             self::PRICES => [$this, 'prices'],
             self::TAGS => [$this, 'tags'],
+            self::SHOPS => [$this, 'shops'],
+            self::TITLES => [$this, 'titles'],
         ];
     }
 
@@ -34,10 +37,13 @@ class ProductFilter extends AbstractFilter {
             $b->whereIn('color_id', $value);
         });
     }
-
+    protected function titles(Builder $builder, $value)
+    {
+        $builder->where('category_id', "LIKE", "%{$value}%");
+    }
     protected function prices(Builder $builder, $value)
     {
-        $builder->whereIn('price', $value); //$value - Массив с мин и макс значением, сюда нет смысла указывать from to
+        $builder->whereIn('price', $value);
     }
 
     protected function tags(Builder $builder, $value)
@@ -45,6 +51,11 @@ class ProductFilter extends AbstractFilter {
         $builder->whereHas('tags', function ($b) use ($value) {
             $b->whereIn('tag_id', $value);
         });
+    }
+
+    protected function shops(Builder $builder, $value)
+    {
+        $builder->whereIn('shop_id', $value);
     }
 
 }

@@ -44,9 +44,10 @@ class IndexController extends BaseController
         if ($data['min'] <= $data['max']) {
             Cookie::make('product_name', $data['product_name'], 360);
 
-            $result = $this->productService->searchIndexProduct($data);
 
-
+            $result = Product::where('title', "LIKE", "%{$data['product_name']}%")->whereHas('tags', function ($b) use ($tag_ids, $data) {
+                $b->whereIn('tag_id', $tag_ids);
+            })->get();
 
             return view('search', compact('tags', 'categories', 'shops', 'colors', 'result', 'tag_products', 'tag_ids'));
 
