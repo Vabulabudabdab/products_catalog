@@ -10,4 +10,11 @@ class Tag extends Model
 
     protected $fillable = ['title'];
 
+
+    public function relProd() {
+
+        return $this->hasMany(ProductTag::class ,'tag_id', 'id');
+
+    }
+
 }

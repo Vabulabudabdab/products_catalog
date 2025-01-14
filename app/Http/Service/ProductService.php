@@ -2,6 +2,7 @@
 
 namespace App\Http\Service;
 
+use App\Http\Filters\ProductFilter;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
@@ -374,24 +375,9 @@ class ProductService
     public function searchIndexProduct($data)
     {
 
-        $product_name = $data['product_name'];
-        $category = $data['category'];
-        $tag_ids = $data['tag_ids'];
-        $min_price = $data['min'];
-        $max_price = $data['max'];
-        $shop_id = $data['shop_id'];
-        $product_id = Product::where('title', 'LIKE', "%{$product_name}%")->get();
+        $filter = app()->make(ProductFilter::class, ['queryParams' => array_filter($data)]);
 
-        $this->setCookieForSearchProduct($category, $min_price, $max_price, $shop_id);
-
-        $result = Product::where([
-            ['title', 'LIKE', "%{$product_name}%"],
-            'category_id' => $category,
-            'shop_id' => $shop_id,
-            ['price', '<=', $max_price],
-            ['price', '>=', $min_price]
-        ])->get();
-
+        $result = Product::filter($filter)->get();
 
         return $result;
 
