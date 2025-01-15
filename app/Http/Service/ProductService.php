@@ -2,7 +2,6 @@
 
 namespace App\Http\Service;
 
-use App\Http\Filters\ProductFilter;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
@@ -10,7 +9,6 @@ use App\Models\ProductColor;
 use App\Models\ProductTag;
 use App\Models\Shop;
 use App\Models\Tag;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -374,22 +372,12 @@ class ProductService
 
     public function searchIndexProduct($data)
     {
+        $tag_ids = $data['tag_ids'];
 
-        $product_name = $data['product_name'];
-        $category = $data['category'];
-        $min_price = $data['min'];
-        $max_price = $data['max'];
-        $shop_id = $data['shop_id'];
+        $result = Product::where('title', "LIKE", "%{$data['product_name']}%")->whereHas('tags', function ($b) use ($tag_ids, $data) {
+            $b->whereIn('tag_id', $tag_ids);
+        })->get();
 
-        $this->setCookieForSearchProduct($category, $min_price, $max_price, $shop_id);
-
-        $result = Product::where([
-            ['title', 'LIKE', "%{$product_name}%"],
-            'category_id' => $category,
-            'shop_id' => $shop_id,
-            ['price', '<=', $max_price],
-            ['price', '>=', $min_price]
-        ])->get();
 
         return $result;
 
