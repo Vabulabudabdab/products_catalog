@@ -93,6 +93,20 @@
                 </div>
             </div>
 
+                <div class="desc_block_filter mt-1 ml-4">
+                    Выберите цвет
+                </div>
+
+                <div class="filter_block ml-1 w-75">
+                    <div class="form-check">
+                        <select class="select2" name="color_ids[]" multiple="multiple" data-placeholder="Выберите цвет" style="width: 100%;">
+                            @foreach($colors as $color)
+                                <option {{!empty(old('color_ids[]')) ? 'selected' : ''}} value="{{$color->id}}">{{$color->title}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
             <div class="desc_block_filter mt-1 ml-4">
                 Фильтр по цене
             </div>

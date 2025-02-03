@@ -25,6 +25,7 @@ class SearchProductRequest extends FormRequest
             'product_name' => 'required',
             'category' => 'required',
             'tag_ids' => 'array|required',
+            'color_ids' => 'array|required',
             'min' => 'required',
             'max' => 'required',
             'shop_id' => 'required'

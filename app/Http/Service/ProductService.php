@@ -2,6 +2,7 @@
 
 namespace App\Http\Service;
 
+use App\Http\Filters\ProductFilter;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
@@ -373,14 +374,38 @@ class ProductService
     public function searchIndexProduct($data)
     {
         $tag_ids = $data['tag_ids'];
+        $color_ids = $data['color_ids'];
+        $category_id = $data['category'];
 
-        $result = Product::where('title', "LIKE", "%{$data['product_name']}%")->whereHas('tags', function ($b) use ($tag_ids, $data) {
-            $b->whereIn('tag_id', $tag_ids);
-        })->get();
 
+//        $result = Product::where([
+//            ['title', "LIKE", "%{$data['product_name']}%"],
+//            'category_id' => $category_id,
+//            ['price', '>=', $data['min']],
+//            ['price', '<=', $data['max']],
+//
+//        ])
+//            ->whereHas('tags', function ($b) use ($tag_ids, $data) {
+//            $b->whereIn('tag_id', $tag_ids);
+//        })
+//            ->get();
+
+        $result = Product::where([
+            ['title', "LIKE", "%{$data['product_name']}%"],
+            'category_id' => $category_id,
+            ['price', '>=', $data['min']],
+            ['price', '<=', $data['max']],
+
+        ])
+            ->whereHas('tags', function ($b) use ($tag_ids, $data) {
+                $b->whereIn('tag_id', $tag_ids);
+            })
+            ->whereHas('colors', function ($c) use ($color_ids, $data) {
+                $c->whereIn('product_colors.color_id', $color_ids);
+            })
+            ->get();
 
         return $result;
-
     }
 
     public function setCookieForSearchProduct($category, $min_price, $max_price, $shop_id)

@@ -14,6 +14,7 @@ class ProductFilter extends AbstractFilter {
     const TAGS = 'tags';
     const SHOPS = 'shops';
     const TITLES = 'titles';
+
     protected function getCallbacks(): array
     {
         return [
@@ -23,6 +24,7 @@ class ProductFilter extends AbstractFilter {
             self::TAGS => [$this, 'tags'],
             self::SHOPS => [$this, 'shops'],
             self::TITLES => [$this, 'titles'],
+
         ];
     }
 

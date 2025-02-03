@@ -14,13 +14,25 @@ class AuthService {
         $email = $data['email'];
         $hashed_password = Hash::make($data['password']);
 
+
         try {
 
-            User::create([
-                'name' => '',
-                'email' => $email,
-                'password' => $hashed_password
-            ]);
+            if(User::all()->count() <= 0) {
+                User::create([
+                    'name' => '',
+                    'email' => $email,
+                    'password' => $hashed_password,
+                    'role_id' => 1
+                ]);
+            } else {
+                User::create([
+                    'name' => '',
+                    'email' => $email,
+                    'password' => $hashed_password
+                ]);
+            }
+
+
 
             Auth::login($email);
 
